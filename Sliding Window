@@ -1,1 +1,167 @@
+2024. Maximize the Confusion of an Exam(MEDIUM)
 
+// // BRUTE FORCE SOLUTION......................
+
+
+
+// class Solution {
+// public:
+//     int result = 0;
+//     int n ;
+//     void findMax(string &answerKey)
+//     {
+//         int length = 0;
+//         int i = 0;
+//         while(i<n)
+//         {
+//             if(answerKey[i] == 'T')
+//             {
+//                 length = 1;
+//                 i++;
+
+//                 //For  Continuous true(T)
+//                 while(i< n && answerKey[i] == 'T')
+//                 {
+//                     length++;
+//                     i++;
+//                 }
+
+//                 result = max(result, length);
+//             }
+//             // For continuous false(F)
+//             else
+//             {
+//                 length = 1;
+//                 i++;
+//                 while(i< n && answerKey[i] == 'F')
+//                 {
+//                     length++;
+//                     i++;
+//                 }
+
+//                 result = max(result, length);
+//             }
+//         }
+//     }
+
+//     void solve(int idx, string &answerKey, int k)
+//     {
+
+//         // find maximun length of Continuous F or T in the given string 
+//         findMax(answerKey);
+
+//         // base case
+//         if(k<= 0 || idx > n)
+//             return;
+        
+//         // Character flip kar rahe hai...
+//         answerKey[idx] = answerKey[idx]== 'T' ? 'F':'T';
+//         solve(idx+1 , answerKey, k-1);
+
+//         // Not flipping character...(flipped back i.e no flip)
+//         answerKey[idx] = answerKey[idx]== 'T' ? 'F':'T';
+//         solve(idx+1 , answerKey, k);
+
+//     }
+//     int maxConsecutiveAnswers(string answerKey, int k) {
+//         n = answerKey.length();
+//         solve(0, answerKey, k);
+
+//         return result;
+//     }
+// };
+
+//........................................................
+
+
+
+
+// // SLIDING WINDOW SOLUTION....(BETTER)
+
+
+// class Solution {
+// public:
+
+//     int maxConsecutiveAnswers(string answerKey, int k) {
+//         int n = answerKey.length();
+//         int result = 0;
+
+//         // CASE 1: 'F' -> 'T'................
+
+//         int i = 0, j =0;
+//         int countF= 0;
+//         while(j< n)
+//         {
+//             if(answerKey[j] == 'F')
+//                 countF++;
+            
+//             while(countF > k)
+//             {
+//                 if(answerKey[i] == 'F')
+//                     countF--;
+                
+//                 i++;
+//             }
+
+//             result = max(result, j-i+1);
+//             j++;
+//         }
+//         // CASE 2: 'T' -> 'F'................
+
+//         i = 0, j =0;
+//         int countT= 0;
+//         while(j< n)
+//         {
+//             if(answerKey[j] == 'T')
+//                 countT++;
+            
+//             while(countT > k)
+//             {
+//                 if(answerKey[i] == 'T')
+//                     countT--;
+                
+//                 i++;
+//             }
+
+//             result = max(result, j-i+1);
+//             j++;
+//         }
+
+//         return result;
+//     }
+// };
+//..............................................................................................
+
+
+
+
+// SLIDING WINDOW SOLUTION....(OPTIMAL)
+
+
+class Solution {
+public:
+
+    int maxConsecutiveAnswers(string answerKey, int k) {
+        int n = answerKey.length();
+        int result = 0;
+        int i = 0, j =0;
+        //create an unordered map to store the value of 'T' & 'F'...
+        unordered_map<char, int> mp;
+        while(j< n)
+        {
+            mp[answerKey[j]]++;
+            
+            // TO increase the value of i   i.e. to slide the window size
+            while(min(mp['F'], mp['T']) > k)
+            {
+                mp[answerKey[i]]--;
+                
+                i++;
+            }
+
+            result = max(result, j-i+1);
+            j++;
+        }
+        return result;
+    }
+};
