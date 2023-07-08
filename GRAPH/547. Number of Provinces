@@ -1,0 +1,203 @@
+547. Number of Provinces.........
+
+//APPROACH 2.
+
+// BFS  without any exta spaces ......
+
+class Solution {
+public:
+    int n;
+
+    //BFS  USING UNORDERED MAP ...
+    void bfs(int u ,unordered_map<int, bool>& visited ,vector<vector<int>>& isConnected )
+    {
+        visited[u] = 1;
+        queue<int> q;
+        q.push(u);
+        while(!q.empty())
+        {
+            int front = q.front();
+            q.pop();
+            for(int v = 0 ; v< n ; v++)
+            {
+                if(!visited[v] && isConnected[u][v] ==1)
+                    bfs(v, visited, isConnected);
+            }
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        n = isConnected.size();
+       
+
+        int count = 0;
+        unordered_map<int, bool> visited;
+        for(int i = 0 ;i< n ;i++)
+        {
+            if(!visited[i])
+            {   
+                bfs(i, visited, isConnected);
+                count++;
+
+            }
+        }
+
+        return count;
+    }
+};
+
+
+
+//......................................................................................................................
+
+//APPRAOCH 1.
+
+// BFS  with the help of unordered map....(creating extra space adjacency lis)......
+
+class Solution {
+public:
+    int n;
+
+    // USING UNORDERED MAP ...
+    void bfs(int node , unordered_map<int, bool>& visited, unordered_map<int,vector<int>>& adj )
+    {
+        visited[node] = 1;
+        queue<int> q;
+        q.push(node);
+        while(!q.empty())
+        {
+            int front = q.front();
+            q.pop();
+            for(auto & neighbour : adj[node])
+            {
+                if(!visited[neighbour])
+                    bfs(neighbour, visited, adj);
+            }
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        n = isConnected.size();
+        // convert into adjacency list
+        unordered_map<int,vector<int>> adj;
+        for(int i = 0 ; i< n ;i++)
+        {
+            for(int j = 0 ;j< n ;j++)
+            {
+                if(isConnected[i][j] == 1 )
+                {
+                    adj[i].push_back(j);
+                    adj[j].push_back(i);
+                }
+            }
+        }
+
+        int count = 0;
+        unordered_map<int, bool> visited;
+        for(int i = 0 ;i< n ;i++)
+        {
+            if(!visited[i])
+            {   
+                bfs(i, visited, adj);
+                count++;
+
+            }
+        }
+
+        return count;
+    }
+};
+
+
+
+
+//***************************************************************************************************************************************************
+
+//APPROACH 4.
+
+// DFS without creating extra adjacency list .........
+
+class Solution {
+public:
+    int n;
+    void dfs(vector<vector<int>> & isConnected, int u,vector<bool>& visited)
+    {
+        visited[u] = 1;
+        for(int v = 0 ; v < n ;v++)
+        {
+            if(!visited[v] && isConnected[u][v] ==1)
+                dfs(isConnected, v, visited);
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        n = isConnected.size();
+        vector<bool> visited(n, false);
+        int count = 0;
+        for(int i = 0 ;i< n ;i++)
+        {
+            if(!visited[i] )
+            {
+                dfs(isConnected, i, visited);
+                count++;
+            }
+
+        }
+
+        return count;
+    }
+};
+
+
+//...................................................................................................................................
+
+//APPROACH 3.
+
+// DFS with the help of unordered map......(with creating adjacency list)........
+
+
+
+class Solution {
+public:
+    int n;
+
+    // USING UNORDERED MAP ...
+    void dfs(int node , unordered_map<int, bool>& visited, unordered_map<int,vector<int>>& adj )
+    {
+        visited[node] = 1;
+        for(auto & neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+                dfs(neighbour, visited, adj);
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        n = isConnected.size();
+        // convert into adjacency list
+        unordered_map<int,vector<int>> adj;
+        for(int i = 0 ; i< n ;i++)
+        {
+            for(int j = 0 ;j< n ;j++)
+            {
+                if(isConnected[i][j] == 1 )
+                {
+                    adj[i].push_back(j);
+                    adj[j].push_back(i);
+                }
+            }
+        }
+
+        int count = 0;
+        unordered_map<int, bool> visited;
+        for(int i = 0 ;i< n ;i++)
+        {
+            if(!visited[i])
+            {   
+                dfs(i, visited, adj);
+                count++;
+
+            }
+        }
+
+        return count;
+    }
+};
+
+//******************************************************************************************************************************************
