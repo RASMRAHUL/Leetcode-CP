@@ -1,0 +1,26 @@
+2551. Put Marbles in Bags.........
+
+For understanding the concepts visit->  codestory with MIK...
+
+class Solution {
+public:
+    long long putMarbles(vector<int>& weights, int k) {
+        int n= weights.size();
+        long maxWeight = 0, minWeight = 0;
+        vector<int> pairSum(n-1);
+        int m = n-1;
+        for(int i = 0 ; i< m ; i++)
+        {
+            pairSum[i] = weights[i] + weights[i+1];
+        }
+        sort(pairSum.begin(), pairSum.end());
+
+        for(int i = 0 ; i< k-1; i++)
+        {
+            maxWeight += pairSum[m-1-i];
+            minWeight += pairSum[i];
+        }
+
+        return maxWeight - minWeight;
+    }
+};
