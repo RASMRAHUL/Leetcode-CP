@@ -1,0 +1,104 @@
+802. Find Eventual Safe States...........
+
+// APPROACH 1 using DFS...
+//class Solution {
+//public:
+    // bool isCycleDFS(vector<vector<int>>&graph,int node,vector<bool>&visited,vector<bool>&inRecursion )
+    // {
+    //     visited[node] = true;
+    //     inRecursion[node] = true;
+    //     for(auto & neighbour : graph[node])
+    //     {
+    //         if(!visited[neighbour] && isCycleDFS(graph, neighbour, visited, inRecursion))
+    //             return true;
+    //         else if(inRecursion[neighbour])
+    //             return true;
+
+    //     }
+
+    //     inRecursion[node] = false;
+    //     return false;
+    // }
+    // vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+    //     int n = graph.size();
+    //     vector<bool> visited(n,0);
+    //     vector<bool> inRecursion(n,0);
+    //     for(int i= 0 ;i<n; i++)
+    //     {
+    //         if(!visited[i])
+    //         {
+    //             isCycleDFS( graph,i, visited, inRecursion);
+                
+    //         }
+    //     }
+    //     vector<int> safeNode;
+    //     for(int i= 0 ;i< n; i++)
+    //     {
+    //         if(inRecursion[i] == false)
+    //             safeNode.push_back(i);
+    //     }
+
+    //     return safeNode;
+    // }
+
+
+//};
+
+//.............................................................................................
+
+
+//Approach-2 (Using BFS) (Toplogical Sort)
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int V = graph.size();
+
+        vector<vector<int>> adj(V);
+        
+        
+        queue<int> que;
+	    vector<int> indegree(V, 0);
+	    
+	    //1 reverse the direction of the graph edges and mark the indegree of each node
+	    for(int u = 0; u < V; u++) {
+	        for(int &v : graph[u]) {
+                adj[v].push_back(u);
+	            indegree[u]++;
+	        }
+	    }
+	    
+	    //2. Fill que, indegree with 0
+	    for(int i = 0; i < V; i++) {
+	        if(indegree[i] == 0) {
+	            que.push(i);
+	            
+	        }
+	    }
+	    
+	    //3. Simple BFS
+        vector<bool> safe(V, false);
+	    while(!que.empty()) {
+	        int u = que.front();
+	        que.pop();
+            safe[u] = true;
+	        
+	        for(int &v : adj[u]) {
+	            indegree[v]--;
+	            
+	            if(indegree[v] == 0) {
+	                que.push(v);
+	               
+	            }
+	            
+	        }
+	    }
+	    
+	    vector<int> safeNodes;
+        for(int i = 0; i < V; i++) {
+            if(safe[i]) {
+                safeNodes.push_back(i);
+            }
+        }
+        return safeNodes;
+    }
+};
