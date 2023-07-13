@@ -1,0 +1,42 @@
+207. Course Schedule............
+
+// TOPOLOGICAL SORT METHOD IS USED TO SOLVE THIS PROBLEM .........(Check the cycle is present then return false and not present then return true;
+
+class Solution {
+public:
+    bool checkCycleDFS(int node, unordered_map<int, bool>& visited, unordered_map<int, bool>& dfsVisited, unordered_map<int, list<int>>& adj) {
+        visited[node] = true;
+        dfsVisited[node] = true;
+        for (auto neighbour : adj[node]) {
+            if (!visited[neighbour] && checkCycleDFS(neighbour, visited, dfsVisited, adj))
+                return true;
+            
+            else if (dfsVisited[neighbour])
+                return true;
+        }
+
+        dfsVisited[node] = false;
+        return false;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        unordered_map<int, bool> visited;
+        unordered_map<int, bool> dfsVisited;
+
+        unordered_map<int, list<int>> adj;
+        for (auto prerequisite : prerequisites) {
+            int u = prerequisite[0];
+            int v = prerequisite[1];
+
+            adj[u].push_back(v);
+        }
+
+        for (int i = 0; i < numCourses; i++) {
+            if (!visited[i] && checkCycleDFS(i, visited, dfsVisited, adj))
+                return false;
+        }
+
+        return true;
+    }
+};
+
