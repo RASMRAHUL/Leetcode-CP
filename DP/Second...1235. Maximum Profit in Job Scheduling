@@ -1,0 +1,55 @@
+Based on the APPROACH ON PROBLEM 1751...(HARD)......
+
+1235. Maximum Profit in Job Scheduling.................
+
+
+class Solution {
+public:
+    int n ;
+    vector<int> dp;
+    int solve(vector<vector<int>>& job, int idx)
+    {
+        if(idx >= n)
+            return 0;
+        
+        int start = job[idx][0];
+        int end = job[idx][1];
+        int value = job[idx][2];
+
+        if(dp[idx] != -1)
+            return dp[idx];
+        int skip = solve(job, idx +1);
+
+        int j = idx + 1;
+        for( ; j< n ;j++)
+        {
+            if(job[j][0] >= job[idx][1] )
+                break;
+        }
+
+        int take = value + solve(job, j);
+        
+        return dp[idx] = max(skip, take);
+    }
+
+    int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
+        n = startTime.size();
+        vector<vector<int>> job(n, vector<int>(3,0)); // {startTime, endTime, profit}
+        for(int i = 0 ;i< n ; i++)
+        {   
+            job[i][0] = startTime[i];
+            job[i][1] = endTime[i];
+            job[i][2] = profit[i];
+            
+        }
+
+        // sort acoording to the starting time...
+        sort(job.begin(), job.end());
+
+        // resize the memoize memory
+        dp.resize(n+1, -1);
+        
+        return solve(job, 0);
+
+    }
+};
